@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #292929; /* Dark background */
+            color: #fff; /* White text color */
+            font-size: 3;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
+            padding: 20px; /* Increased padding for better spacing */
+            text-align: center; /* Center the content */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px; /* Added margin for better spacing */
+        }
+
+        th,
+        td {
+            padding: 12px; /* Increased padding for better spacing */
+            text-align: center;
+        }
+
+        th {
+            background-color: #00cc66; /* Green header */
+            color: #fff; /* White text color */
+        }
+
+        tr:nth-child(even) {
+            background-color: #333; /* Darker gray background for even rows */
+        }
+
+        tr:nth-child(odd) {
+            background-color: #444; /* Slightly lighter gray background for odd rows */
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px; /* Added margin for better spacing */
+        }
+
+        .button {
+            border: none;
+            border-radius: 5px;
+            padding: 12px 24px;
+            font-size: 14px;
+            color: #fff; /* White text color */
+            background-color: #00cc66; /* Green button color */
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #008040; /* Darker green on hover */
+        }
+
+        .logo {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .centered-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: center;
+        }
+
+        .button-row .button {
+            padding: 10px 20px; /* Adjusted padding for the buttons in each row */
+        }
+
+        #scrollToTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #00cc66;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        #scrollToTopBtn:hover {
+            background-color: #008040; /* Darker green on hover */
+        }
+
+        @media screen and (max-width: 600px) {
+            th {
+                display: none; /* Hide table headers on mobile */
+            }
+
+            .container {
+                box-sizing: border-box; /* Include padding and borders in width calculation */
+                overflow-x: auto; /* Allow horizontal scrolling for small screens */
+            }
+
+            tr {
+                display: block;
+                margin-bottom: 20px;
+                background-color: #444; /* Darker gray background for even rows */
+            }
+
+            td {
+                display: block;
+                text-align: left;
+                padding: 10px; /* Add padding for better spacing */
+                width: 100%;
+            }
+
+            /* Adjust button styles for mobile */
+            td[data-label="Detailed Profile"] form {
+                margin-top: 10px; /* Add some spacing between buttons */
+            }
+
+            td[data-label="Detailed Profile"] button {
+                display: block; /* Display the buttons on mobile */
+                margin-bottom: 5px; /* Add some spacing between buttons */
+                width: calc(100% - 5px); /* Make the button full width with some margin */
+                margin-left: 10px; /* Add some left margin for better spacing */
+                padding: 12px 20px; /* Adjust padding for mobile */
+            }
+        }
+    </style>
+</head>
+
+<body  >
+    <div class="container">
+        <img src="{{url_for('static', filename='Logo.jpg')}}" class="logo" alt="Logo">
+
+        <div class="button-container c">
+            <button onclick="window.location.href='/'" class="button">Return to Home Page</button>
+            <button onclick="sortTable()" class="button">Sort by Name</button>
+        </div>
+
+        <table id="myTable">
+            <thead>
+                <tr>
+                    <th>Detailed Profile</th>
+                    <th>Name</th>
+                    <th>Service(s)</th>
+                    <th>Phone #</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for value in listed %}
+                    <tr>
+                        <td data-label="Detailed Profile" class="centered-buttons">
+                            <form action="/profile" method="post">
+                                <input type="hidden" name="name" value="{{ value[0] }}">
+                                <input type="hidden" name="phone" value="{{ value[2] }}">
+                                <input type="hidden" name="ser" value="{{ value[1] }}">
+                                <button type="submit" class="button">View Profile</button>
+                            </form>
+                        </td>
+                        <td data-label="Name">{{ value[0] }}</td>
+                        <td data-label="Service(s)">{{ value[1] }}</td>
+                        <td data-label="Phone #"><a href="tel:{{value[2]}}" style="color: #00cc66;">{{value[2]}}</a></td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Floating Scroll to Top button -->
+        <button onclick="scrollToTop()" id="scrollToTopBtn" title="Go to top">&#9650;</button>
+    </div>
+
+    <script>
+        function sortTable() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("myTable");
+            switching = true;
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < rows.length - 1; i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[1];
+                    y = rows[i + 1].getElementsByTagName("TD")[1];
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+        function scrollToTop() {
+            var scrollToTopBtn = document.getElementById("scrollToTopBtn");
+            var scrollDuration = 300; // duration in milliseconds
+
+            var scrollStep = -window.scrollY / (scrollDuration / 15),
+                scrollInterval = setInterval(function () {
+                    if (window.scrollY !== 0) {
+                        window.scrollBy(0, scrollStep);
+                    } else {
+                        clearInterval(scrollInterval);
+                    }
+                }, 15);
+
+            setTimeout(function () {
+                scrollToTopBtn.style.display = "none";
+            }, scrollDuration);
+        }
+
+        window.onscroll = function () {
+            var scrollToTopBtn = document.getElementById("scrollToTopBtn");
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                scrollToTopBtn.style.display = "block";
+            } else {
+                scrollToTopBtn.style.display = "none";
+            }
+        };
+    </script>
+</body>
+
+</html>

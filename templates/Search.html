@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Search Results</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #292929;
+            color: #fff;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        header {
+            background-color: #00cc66;
+            padding: 10px;
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #333;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            transition: background-color 0.5s;
+        }
+
+        body.light-mode form {
+            background-color: #fff;
+        }
+
+        select,
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #666;
+            color: #000;
+        }
+
+        select {
+            background-color: #e0e0e0;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .button {
+            display: inline-block;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #00cc66;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #008040;
+        }
+
+        @media screen and (max-width: 600px) {
+            form {
+                padding: 10px;
+            }
+        }
+
+        .flash-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 128, 0.5);
+            z-index: 999;
+            animation: fadeOut 1s ease-in-out;
+        }
+
+        .flash-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #000080;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            border: 2px solid #fff;
+            box-sizing: border-box;
+            animation: fadeOut 1s ease-in-out;
+        }
+
+        .flash-popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #fff;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse-effect {
+            animation: pulse 1s ease-in-out;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .fade-out {
+            animation: fadeOut 1s ease-in-out;
+        }
+
+        /* Counter box styles */
+        .counter-box {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 40px;
+            background-color: #444;
+            color: #fff;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        body.light-mode .counter-box {
+            background-color: #f0f0f0;
+            color: #000;
+        }
+
+        .counter-box h3 {
+            margin-top: 0;
+        }
+
+        @media screen and (max-width: 600px) {
+            .counter-box {
+                padding: 20px;
+                margin: 20px 20px;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+
+<body bgcolor="lightgoldenrodyellow">
+    <header>
+        <h5>Find your Local Service Contacts</h5>
+    </header>
+    <img src="{{url_for('static', filename='Logo.jpg')}}" alt="Logo">
+    <form action="/result" method="POST">
+        <!-- Your existing form -->
+        <p>
+            <b>Service:</b> <br />
+            <select type="text" name="Service">
+                <option value='' SELECTED></option>
+                {% for service in services %}
+                    <option value="{{service}}">{{service}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <div class="button-container">
+            <button class="button pulse-effect" type="submit" name="submit_button" value="ServSearch">Find</button>
+        </div>
+
+        <p>
+            <b>Name:</b> <br />
+            <input type="text" name="Name" />
+        </p>
+        <div class="button-container">
+            <button class="button pulse-effect" type="submit" name="submit_button" value="NameSearch">Find</button>
+        </div>
+
+        <br />
+        <div class="button-container">
+            <button class="button pulse-effect" type="submit" name="submit_button" value="AddCont">Add a new
+                Contact</button>
+        </div>
+    </form>
+
+     <!--Counter Box -->
+    <div class="counter-box">
+        <h3>Number of Contacts:</h3>
+        <p id="counterValue">{{people}}</p>
+
+    </div>
+
+    <!-- Flash message container -->
+    <div class="flash-overlay" id="flashOverlay"></div>
+    <div class="flash-popup fade-out" id="flashPopup">
+        <span class="flash-popup-close" onclick="closeFlashPopup()">&times;</span>
+        <p id="flashMessage"></p>
+    </div>
+
+    <script>
+        // Counter initialization
+
+
+        // Pulsing effect on click
+        document.addEventListener('click', function (event) {
+            var pulseElement = event.target.closest('.pulse-effect');
+            if (pulseElement) {
+                pulseElement.classList.add('pulse-effect');
+                setTimeout(function () {
+                    pulseElement.classList.remove('pulse-effect');
+                }, 1000);
+            }
+        });
+
+        // Fade out effect on form submission
+        document.addEventListener('submit', function () {
+            document.body.classList.add('fade-out');
+        });
+
+        // Function to close the flash popup
+        function closeFlashPopup() {
+            document.getElementById('flashOverlay').style.display = 'none';
+            document.getElementById('flashPopup').style.display = 'none';
+        }
+
+        // Example of showing a flash message
+        function showFlashMessage(message) {
+            document.getElementById('flashMessage').innerText = message;
+            document.getElementById('flashOverlay').style.display = 'block';
+            document.getElementById('flashPopup').style.display = 'block';
+        }
+
+        // You can call showFlashMessage('Your message here!'); in your JavaScript code when needed.
+    </script>
+</body>
+
+</html>

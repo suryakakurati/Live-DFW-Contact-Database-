@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Add Service Contact</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #292929; /* Dark background */
+            color: #fff; /* White text color */
+            margin: 0;
+        }
+
+        .container {
+            max-width: 70%; /* Reduced the width for a centered look */
+            margin: 0 auto;
+            padding: 20px; /* Increased padding for better spacing */
+            text-align: center; /* Center the content */
+            background-color: #292929; /* Dark background */
+            border-radius: 10px; /* Rounded corners for a softer look */
+        }
+
+        .zoom {
+            zoom: 150%;
+        }
+
+        .alert {
+            padding-left: 10px;
+            color: white;
+            font-size: .5em;
+            opacity: 1;
+            transition: opacity 0.6s;
+            margin-bottom: 15px;
+            width: 90%;
+        }
+
+        .alert-error {
+            background-color: #f44336;
+        }
+
+        .alert-success {
+            background-color: #4CAF50;
+        }
+
+        .button {
+            border-radius: 5px; /* Reduced border-radius for a less prominent look */
+            background-color: #4CAF50; /* Consistent green color */
+            border-color: #4CAF50; /* Consistent green color */
+            color: white;
+            font-size: .5em; /* Reduced font size for smaller buttons */
+            opacity: 0.8;
+            padding: 8px 16px; /* Reduced padding for smaller buttons */
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #008040; /* Darker green on hover */
+        }
+
+        .logo {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .button-container {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .button {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body class="zoom" bgcolor="#D1FFEF">
+    <form action="/add" method="POST">
+        <div class="container">
+            {% for message in get_flashed_messages() %}
+                {% if error=='yes' %}
+                    <div class="alert alert-error">
+                        {{ message }}
+                    </div>
+                {% endif %}
+                {% if error=='no' %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {% block page_content %}{% endblock %}
+
+            <div class="center" class="txtcolor">
+                <h5>Add a new Service Contact</h5>
+                <p style="font-size: .675em">
+                    <b>Name*: </b>
+                    <input style='font-size: .675em' type="text" name="CName" />
+                </p>
+                <p style="font-size: .675em">
+                    <label><b>Phone*:</b>
+                        (<input name="tel1" type="tel" pattern="[0-9]{3}" placeholder="###" maxlength="3" minlength="3" aria-label="3-digit area code" size="2" oninput="moveToNext(this, 'tel2')" />)
+                        -
+                        <input name="tel2" type="tel" pattern="[0-9]{3}" placeholder="###" maxlength="3" minlength="3" aria-label="3-digit prefix" size="2" oninput="moveToNext(this, 'tel3')" />
+                        -
+                        <input name="tel3" type="tel" pattern="[0-9]{4}" placeholder="####" maxlength="4" minlength="4" aria-label="4-digit number" size="3" />
+                    </label>
+                </p>
+                <!-- Other input fields -->   <p style="font-size: .675em">
+                    <b>Service*: </b>
+                    <select type="text" name="CService">
+                        <option value='' SELECTED></option>
+                        {% for service in services %}
+                            <option value="{{service}}">{{service}}</option>"
+                        {% endfor %}
+                    </select>
+                </p>
+                <p style="font-size: .675em">
+                    <b>Comments/Review: </b>
+                    <input type="text" name="CComments" />
+                </p>
+                <p style="font-size: .675em">
+                    <b>Email: </b>
+                    <input type="text" name="CEmail" />
+                </p>
+                <p style="font-size: .675em">
+                    <b>Website: </b>
+                    <input type="text" name="CWeb" />
+                </p>
+                <p style="font-size: .675em">
+                    <b>Rating*: </b>
+                    <select type="text" name="CRating">
+                        <option value=""></option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </p>
+                <p style="font-size: .675em">
+                    <b>Recommended By: </b>
+                    <input type="text" name="Rec" />
+                </p>
+                <br /> <br />
+                <div class="button-container">
+                    <button class="button" type="submit" name="submit_button" value="AddContra">Add Service Contact</button>
+                    <button class="button" type="submit" name="submit_button" value="Back">Return to Home Page</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function moveToNext(input, nextInput) {
+            var len = input.value.length;
+            var maxLength = input.getAttribute("maxlength");
+
+            if (len === maxLength) {
+                document.getElementsByName(nextInput)[0].focus();
+            }
+        }
+    </script>
+</body>
+
+</html>

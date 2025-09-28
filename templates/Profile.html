@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px;
+            background-color: #292929; /* Dark background */
+            color: #fff; /* White text color */
+        }
+
+        .profile-container {
+            background-color: #535353; /* Darker background */
+            border: 1px solid #1f1f1f; /* Darker border color */
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            background-color: #1f1f1f; /* Dark header */
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .profile-info {
+            padding: 20px;
+            border-top: 1px solid #1f1f1f; /* Darker border color */
+        }
+
+        .profile-info:nth-child(even) {
+            background-color: #404040; /* Darker alternate background */
+        }
+
+        h2 {
+            color: #4CAF50; /* Green heading */
+            margin-top: 0;
+        }
+
+        p {
+            color: #ccc; /* Light text color */
+        }
+
+        .back-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .back-button a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        /* Added styles for clickable links */
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="profile-container">
+
+        <div class="profile-header">
+            <h1>Profile Page</h1>
+        </div>
+
+        <div class="profile-info">
+            <h2>Name</h2>
+            <p>{{value[0]}}</p>
+        </div>
+
+        <div class="profile-info">
+            <h2>Services</h2>
+            <p>{{value[1]}}</p>
+        </div>
+        <div class="profile-info">
+            <h2>Phone Number</h2>
+            {% if value[2] != '-' %}
+                <p><a href="tel:{{value[2]}}">{{value[2]}}</a></p>
+            {% else %}
+                <p>{{value[2]}}</p>
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h2>Email</h2>
+            {% if value[4] != '-' %}
+                <p><a href="mailto:{{value[4]}}">{{value[4]}}</a></p>
+            {% else %}
+                <p>{{value[4]}}</p>
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h2>Website</h2>
+            {% if value[5] != '-' %}
+                <p><a href="{{value[5]}}" target="_blank">{{value[5]}}</a></p>
+            {% else %}
+                <p>{{value[5]}}</p>
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h2>Comments</h2>
+            <p>{{value[3]}}</p>
+        </div>
+        <div class="profile-info">
+            <h2>Rating</h2>
+            <p>{{value[6]}}</p>
+        </div>
+        <div class="profile-info">
+            <h2>Recommended By</h2>
+            <p>{{value[7]}}</p>
+        </div>
+
+        <!-- Repeat the above structure for the remaining slots -->
+
+        <div class="back-button">
+            <a href="/">Back to Home</a>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+
