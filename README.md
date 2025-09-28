@@ -1,4 +1,8 @@
+## 🌟 Live DFW Contact Database
+
 A Flask web app to manage, search, and add service contacts in the Dallas-Fort Worth area using CSV files.
+
+# 🌐 Live Demo
 
 Features
 
@@ -6,11 +10,23 @@ Features
 
 📄 View detailed Profile for each contact
 
-➕ Add new service contacts with full details (phone, service, email, website, rating, comments)
+➕ Add new service contacts with full details:
+
+Phone
+
+Service
+
+Email
+
+Website
+
+Rating
+
+Comments / Recommendations
 
 📋 Dynamic services list from Services.csv
 
-🌐 Live Demo Available at https://suryeah.pythonanywhere.com
+🌐 Live demo available online
 
 Project Structure
 mysite/
@@ -18,20 +34,22 @@ mysite/
 ├─ People.csv          # Contact details
 ├─ Services.csv        # List of services
 ├─ flask_app.py        # Main Flask app
-├─ static/Logo.jpg     # Logo image
+├─ static/
+│   └─ Logo.jpg        # Logo image
 └─ templates/
     ├─ Add.html
     ├─ Profile.html
     ├─ Search.html
     └─ results.html
 
-Setup & Installation
-# Clone repo
+## Setup & Installation
+# Clone the repo
 git clone https://github.com/suryakakurati/Live-DFW-Contact-Database-.git
 cd mysite
 
 # Create virtual environment
 python -m venv venv
+
 # macOS / Linux
 source venv/bin/activate
 # Windows
@@ -44,25 +62,38 @@ Run the App Locally
 python flask_app.py
 
 
-Open your browser at:
+Then open your browser at:
 
 http://127.0.0.1:5000/
 
 
-Or access the live demo directly: [https://suryeah.pythonanywhere.com](url)
+Or access the live demo directly: https://suryeah.pythonanywhere.com
 
 Usage
 
-Search for a contact by Service or Name.
+Search for a contact by Service or Name
 
-Click a contact to view full details.
+Click a contact to view full details
 
-Add a new contact via the Add Contact page.
+Add a new contact via the Add Contact page
 
 Notes
 
-CSV files act as the database.
+CSV files act as the database
 
-Admin password set in flask_app.py as app.config['ADMIN_PASSWORD'] = 'admin'.
+Admin password set in flask_app.py as:
 
-Ignore __pycache__ files—they are auto-generated.
+app.config['ADMIN_PASSWORD'] = 'admin'
+
+
+Ignore __pycache__ files—they are auto-generated
+
+Future Improvements
+
+Move from CSV to SQL database
+
+Add user authentication for admin features
+
+Improve form validation and error handling
+
+Deploy live using Heroku or PythonAnywhere (already live!)
